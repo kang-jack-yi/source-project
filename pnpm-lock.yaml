@@ -32,6 +32,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      eslint-config-airbnb-base:
+        specifier: 15.0.0
+        version: 15.0.0(eslint-plugin-import@2.30.0)(eslint@8.57.0)
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
