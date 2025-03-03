@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EntitySelect, type EntitySelectProps } from '@/components';
 import { filterEntityMap } from '@/plugin/utils';
 
@@ -22,8 +22,13 @@ export default React.memo((props: IProps) => {
         entityExcludeChildren,
         maxCount = 5,
         customFilterEntity,
+        value,
+        error,
         ...restProps
     } = props;
+
+    // is beyond mutiSelect number
+    const [isBeyondNum, setIsBeyondNum] = useState<boolean>(false);
 
     const filterOption = useMemo(
         () =>
@@ -37,6 +42,15 @@ export default React.memo((props: IProps) => {
     const getOptionValue = useCallback<
         Required<EntitySelectProps<any, false, false>>['getOptionValue']
     >(option => option?.value, []);
+
+    useEffect(() => {
+        if ((value || []).length > maxCount) {
+            !isBeyondNum && setIsBeyondNum(true);
+        } else {
+            isBeyondNum && setIsBeyondNum(false);
+        }
+    }, [value]);
+
     return (
         <EntitySelect
             fieldName="entityId"
@@ -48,6 +62,8 @@ export default React.memo((props: IProps) => {
             excludeChildren={entityExcludeChildren}
             filterOption={filterOption}
             getOptionValue={getOptionValue}
+            value={value}
+            error={isBeyondNum || error}
             {...restProps}
         />
     );

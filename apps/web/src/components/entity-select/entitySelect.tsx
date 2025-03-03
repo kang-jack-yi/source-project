@@ -177,7 +177,7 @@ const EntitySelect = <
                 component: EntityList,
                 tabType,
                 options,
-                maxCount,
+                // maxCount,
                 selectedEntityMap,
                 selectedDeviceMap,
                 onEntityChange(...args: Parameters<typeof onEntityChange>) {
