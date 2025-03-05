@@ -3,6 +3,7 @@ import { useTheme } from '@milesight/shared/src/hooks';
 
 import * as Icons from '@milesight/shared/src/components/icons';
 import { Tooltip } from '@/plugin/view-components';
+import { ThousandDigitNumber } from '@/components';
 import { useSource } from './hooks';
 import type { ViewConfigProps } from '../typings';
 import './style.less';
@@ -72,7 +73,7 @@ const View = (props: Props) => {
                 <Tooltip className="data-view__title" autoEllipsis title={title} />
             </div>
             <span className="data-view__content">
-                <Tooltip autoEllipsis title={currentEntityData?.label || '-'} />
+                <ThousandDigitNumber data={currentEntityData?.label} emptyTip="-" />
             </span>
         </div>
     );

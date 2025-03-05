@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { entityAPI, awaitWrap, isRequestSuccess, getResponseData } from '@/services/http';
 import ws, { getExChangeTopic } from '@/services/ws';
-
+import { ThousandDigitNumber } from '@/components';
 import './style.less';
 
 export interface ViewProps {
@@ -88,7 +88,7 @@ const View = (props: ViewProps) => {
                 className="text-wrapper__content bg-custom-scrollbar"
                 style={{ fontSize: `${fontSize}px`, lineHeight: `${Number(fontSize) + 8}px` }}
             >
-                {textContent}
+                <ThousandDigitNumber data={textContent} />
             </div>
         </div>
     );
