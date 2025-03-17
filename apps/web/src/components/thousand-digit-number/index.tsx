@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { thousandSeparate } from '@milesight/shared/src/utils/tools';
 import Tooltip from '../tooltip';
 
 export interface Props {
@@ -12,7 +13,7 @@ const ThousandDigitNumber: React.FC<Props> = props => {
 
     const value = useMemo(() => {
         if (!!data && !isNaN(Number(data))) {
-            return Number(data).toLocaleString('en-US');
+            return thousandSeparate(data);
         }
         return data || emptyTip;
     }, [data]);

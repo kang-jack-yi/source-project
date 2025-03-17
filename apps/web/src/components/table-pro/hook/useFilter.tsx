@@ -3,9 +3,10 @@ import classNames from 'classnames';
 import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import { FilterAltIcon, SearchIcon } from '@milesight/shared/src/components';
 import DateRangePicker, { DateRangePickerValueType } from '@/components/date-range-picker';
+import { useI18n } from '@milesight/shared/src/hooks';
 import { ColumnType, FilterValue } from '../interface';
 
-const enum FilterObjKey {
+export const enum FilterObjKey {
     Key = 'key',
     Value = 'value',
     Type = 'type',
@@ -19,6 +20,7 @@ type Props = {
 
 // table  column searchFilter
 const useFilter = (props: Props) => {
+    const { getIntlText } = useI18n();
     const { setAnchorElement, onFilterInfoChange } = props;
     const [filterInfo, setFilterInfo] = useState<Record<string, FilterValue | null>>({});
     const [filterObj, setFilterObj] = useState<Record<FilterObjKey, any>>();
@@ -32,6 +34,7 @@ const useFilter = (props: Props) => {
         }
     }, [filterObj?.visible]);
 
+    // reset search value
     const handleResetFilter = () => {
         if (filterObj) {
             const filterObjTmp = { ...filterObj, value: '', visible: false };
@@ -43,6 +46,7 @@ const useFilter = (props: Props) => {
         }
     };
 
+    // confirm search value
     const handleConfirmFilter = () => {
         const filterInfoTmp = { ...filterInfo };
         if (filterObj) {
@@ -67,6 +71,7 @@ const useFilter = (props: Props) => {
         setFilterObj(filterObjTmp);
     };
 
+    // render search component
     const generateInputComponent = (type: string) => {
         switch (type) {
             case 'search': {
@@ -74,7 +79,7 @@ const useFilter = (props: Props) => {
                     <div className="ms-table-pro-popover-filter-searchInput">
                         <OutlinedInput
                             inputRef={inputRef}
-                            placeholder="Search"
+                            placeholder={getIntlText('common.label.search')}
                             sx={{ width: 200 }}
                             value={filterObj?.value || ''}
                             onChange={e => {
@@ -93,7 +98,10 @@ const useFilter = (props: Props) => {
                 return (
                     <div className="ms-table-pro-popover-filter-rangePicker">
                         <DateRangePicker
-                            label={{ start: 'Start date', end: 'End date' }}
+                            label={{
+                                start: getIntlText('common.start.date'),
+                                end: getIntlText('common.end.date'),
+                            }}
                             onChange={(values: DateRangePickerValueType | null) => {
                                 changeFilterObj('value', values);
                             }}
@@ -109,6 +117,7 @@ const useFilter = (props: Props) => {
         }
     };
 
+    // render search header icon
     const getFilterIcon = (col: ColumnType, filtered: boolean): React.ReactNode => {
         let filterIcon: React.ReactNode;
         const { filterIcon: customIcon } = col;
@@ -122,7 +131,6 @@ const useFilter = (props: Props) => {
 
         return (
             <div
-                style={{ display: 'flex' }}
                 className={classNames('ms-table-pro-columns-header-icon', {
                     'ms-table-pro-columns-header-icon-active':
                         filtered && typeof col.filterIcon !== 'function',

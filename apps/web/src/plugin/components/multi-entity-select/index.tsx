@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EntitySelect, type EntitySelectProps } from '@/components';
 import { filterEntityMap } from '@/plugin/utils';
+import { toast } from '@milesight/shared/src/components';
+import { useI18n } from '@milesight/shared/src/hooks';
 
 type MultipleEntitySelectProps = EntitySelectProps<EntityOptionType, true, false>;
 interface IProps extends MultipleEntitySelectProps {
@@ -26,7 +28,7 @@ export default React.memo((props: IProps) => {
         error,
         ...restProps
     } = props;
-
+    const { getIntlText } = useI18n();
     // is beyond mutiSelect number
     const [isBeyondNum, setIsBeyondNum] = useState<boolean>(false);
 
@@ -46,6 +48,7 @@ export default React.memo((props: IProps) => {
     useEffect(() => {
         if ((value || []).length > maxCount) {
             !isBeyondNum && setIsBeyondNum(true);
+            toast.error({ content: getIntlText('common.message.beyond_max_select') });
         } else {
             isBeyondNum && setIsBeyondNum(false);
         }

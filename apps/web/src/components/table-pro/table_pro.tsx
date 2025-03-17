@@ -1,19 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isUndefined } from 'lodash-es';
-import { OutlinedInput, InputAdornment, Popover, Button } from '@mui/material';
+import { OutlinedInput, InputAdornment } from '@mui/material';
 import {
     DataGrid,
     type DataGridProps,
     type GridValidRowModel,
     type GridColDef,
 } from '@mui/x-data-grid';
-import { useI18n } from '@milesight/shared/src/hooks';
 import { SearchIcon } from '@milesight/shared/src/components';
 import Tooltip from '../tooltip';
-import { Footer, NoDataOverlay, NoResultsOverlay } from './components';
-import './style.less';
-import useFilter from './hook/useFilter';
+import { Footer, NoDataOverlay, NoResultsOverlay, usePopover } from './components';
 import { ColumnType, FilterValue } from './interface';
+import './style.less';
 
 export interface Props<T extends GridValidRowModel> extends DataGridProps<T> {
     columns: ColumnType<T>[];
@@ -59,19 +57,7 @@ const TablePro = <DataType extends GridValidRowModel>({
     paginationMode = 'server',
     ...props
 }: Props<DataType>) => {
-    const { getIntlText } = useI18n();
-    const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-    const setAnchorElement = useCallback((el: null | HTMLButtonElement) => {
-        setAnchorEl(el);
-    }, []);
-    const {
-        filterObj,
-        changeFilterObj,
-        handleResetFilter,
-        generateInputComponent,
-        handleConfirmFilter,
-        renderHeader,
-    } = useFilter({ setAnchorElement, onFilterInfoChange });
+    const { filterObj, renderHeader, renderPopover } = usePopover({ onFilterInfoChange });
 
     const memoColumns = useMemo(() => {
         const result = columns.map((column, index) => {
@@ -181,37 +167,7 @@ const TablePro = <DataType extends GridValidRowModel>({
                     {...props}
                 />
             </div>
-            <Popover
-                open={!!filterObj && filterObj.visible}
-                anchorEl={anchorEl}
-                onClose={() => changeFilterObj('visible', false)}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-            >
-                <div className="ms-table-pro-popover">
-                    {generateInputComponent(filterObj?.type)}
-                    <div className="ms-table-pro-popover-footer">
-                        <div
-                            className={`ms-table-pro-popover-footer-reset ${
-                                !filterObj?.value ? 'ms-table-pro-popover-footer-reset-disable' : ''
-                            }`}
-                        >
-                            <Button
-                                onClick={handleResetFilter}
-                                variant="outlined"
-                                disabled={!filterObj?.value}
-                            >
-                                {getIntlText('common.button.reset')}
-                            </Button>
-                        </div>
-                        <Button onClick={handleConfirmFilter} variant="contained">
-                            {getIntlText('common.button.confirm')}
-                        </Button>
-                    </div>
-                </div>
-            </Popover>
+            {renderPopover()}
         </div>
     );
 };
